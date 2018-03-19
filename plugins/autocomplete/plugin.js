@@ -155,6 +155,8 @@
 	 * {@link CKEDITOR.plugins.autocomplete.model.item} interface.
 	 */
 	function Autocomplete( editor, textTestCallback, dataCallback ) {
+		var configKeystroke = editor.config.autocomplete_commitKeystroke || CKEDITOR.config.autocomplete_commitKeystroke;
+
 		/**
 		 * The editor instance to which this autocomplete is attached (meaning &mdash; on which it listens).
 		 *
@@ -186,6 +188,15 @@
 		 * @property {CKEDITOR.plugins.textWatcher}
 		 */
 		this.textWatcher = this.getTextWatcher( textTestCallback );
+
+		/**
+		 * The autocomplete keystrokes used to finish autocompletion with selected view item.
+		 * The property is using {@link CKEDITOR.config#autocomplete_commitKeystroke} configuration option as default keystrokes.
+		 * You can change this property to set individual keystrokes for plugin instance.
+		 *
+		 * @property {Number[]}
+		 */
+		this.commitKeystroke = CKEDITOR.tools.array.isArray( configKeystroke ) ? configKeystroke.slice() : [ configKeystroke ];
 
 		/**
 		 * Listeners registered by this autocomplete instance.
@@ -427,8 +438,8 @@
 			} else if ( keyCode == 38 ) {
 				this.model.selectPrevious();
 				handled = true;
-			// Enter key.
-			} else if ( keyCode == 13 ) {
+			// Completition keys.
+			} else if ( CKEDITOR.tools.indexOf( this.commitKeystroke, keyCode ) != -1 ) {
 				this.commit();
 				this.textWatcher.unmatch();
 				handled = true;
@@ -1076,4 +1087,28 @@
 	CKEDITOR.plugins.autocomplete = Autocomplete;
 	Autocomplete.view = View;
 	Autocomplete.model = Model;
+
+	/**
+	 * The autocomplete keystrokes used to finish autocompletion with selected view item.
+	 * This setting will set completing keystrokes for each autocomplete plugin respectively.
+	 *
+	 * To change completing keystrokes individually use {@link CKEDITOR.plugins.autocomplete#commitKeystroke} plugin property.
+	 *
+	 * ```js
+	 * // Default config (9 = tab, 13 = enter).
+	 * config.autocomplete_commitKeystroke = [ 9, 13 ];
+	 * ```
+	 *
+	 * Commit keystroke can be also disabled by setting it to an empty array.
+	 *
+	 * ```js
+	 * // Disable autocomplete commit keystroke.
+	 * config.autocomplete_commitKeystroke = [];
+	 * ```
+	 *
+	 * @since 4.10.0
+	 * @cfg {Number/Number[]} [autocomplete_commitKeystroke=[9, 13]]
+	 * @member CKEDITOR.config
+	 */
+	CKEDITOR.config.autocomplete_commitKeystroke = [ 9, 13 ];
 } )();

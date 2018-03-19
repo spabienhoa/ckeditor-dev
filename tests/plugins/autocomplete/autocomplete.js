@@ -4,7 +4,19 @@
 ( function() {
 	'use strict';
 
-	bender.editor = true;
+	bender.editors = {
+		standard: {},
+		arrayKeystrokes: {
+			config: {
+				autocomplete_commitKeystroke: [ 16 ] // SHIFT
+			}
+		},
+		singleKeystroke: {
+			config: {
+				autocomplete_commitKeystroke: 16 // SHIFT
+			}
+		}
+	};
 
 	bender.test( {
 
@@ -15,10 +27,10 @@
 		},
 
 		'test esc key closes view': function() {
-			var editor = this.editor, bot = this.editorBot,
-				ac = new CKEDITOR.plugins.autocomplete( this.editor, matchTestCallback, dataCallback );
+			var editor = this.editors.standard,
+				ac = new CKEDITOR.plugins.autocomplete( editor, matchTestCallback, dataCallback );
 
-			bot.setHtmlWithSelection( '' );
+			this.editorBots.standard.setHtmlWithSelection( '' );
 
 			editor.editable().fire( 'keyup', new CKEDITOR.dom.event( {} ) );
 
@@ -32,10 +44,10 @@
 		},
 
 		'test autocomplete starts with the first item selected': function() {
-			var editor = this.editor, bot = this.editorBot,
-				ac = new CKEDITOR.plugins.autocomplete( this.editor, matchTestCallback, dataCallback );
+			var editor = this.editors.standard,
+				ac = new CKEDITOR.plugins.autocomplete( editor, matchTestCallback, dataCallback );
 
-			bot.setHtmlWithSelection( '' );
+			this.editorBots.standard.setHtmlWithSelection( '' );
 
 			editor.editable().fire( 'keyup', new CKEDITOR.dom.event( {} ) );
 
@@ -46,10 +58,11 @@
 		},
 
 		'test arrow down selects next item': function() {
-			var editor = this.editor, bot = this.editorBot, editable = editor.editable(),
-				ac = new CKEDITOR.plugins.autocomplete( this.editor, matchTestCallback, dataCallback );
+			var editor = this.editors.standard,
+				editable = editor.editable(),
+				ac = new CKEDITOR.plugins.autocomplete( editor, matchTestCallback, dataCallback );
 
-			bot.setHtmlWithSelection( '' );
+			this.editorBots.standard.setHtmlWithSelection( '' );
 
 			editor.editable().fire( 'keyup', new CKEDITOR.dom.event( {} ) );
 
@@ -72,10 +85,11 @@
 		},
 
 		'test arrow up selects previous item': function() {
-			var editor = this.editor, bot = this.editorBot, editable = editor.editable(),
-				ac = new CKEDITOR.plugins.autocomplete( this.editor, matchTestCallback, dataCallback );
+			var editor = this.editors.standard,
+				editable = editor.editable(),
+				ac = new CKEDITOR.plugins.autocomplete( editor, matchTestCallback, dataCallback );
 
-			bot.setHtmlWithSelection( '' );
+			this.editorBots.standard.setHtmlWithSelection( '' );
 
 			editor.editable().fire( 'keyup', new CKEDITOR.dom.event( {} ) );
 
@@ -103,10 +117,11 @@
 		},
 
 		'test enter inserts match': function() {
-			var editor = this.editor, bot = this.editorBot, editable = editor.editable(),
-				ac = new CKEDITOR.plugins.autocomplete( this.editor, matchTestCallback, dataCallback );
+			var editor = this.editors.standard,
+				editable = editor.editable(),
+				ac = new CKEDITOR.plugins.autocomplete( editor, matchTestCallback, dataCallback );
 
-			bot.setHtmlWithSelection( '' );
+			this.editorBots.standard.setHtmlWithSelection( '' );
 
 			editor.editable().fire( 'keyup', new CKEDITOR.dom.event( {} ) );
 
@@ -117,11 +132,86 @@
 			ac.destroy();
 		},
 
-		'test click inserts match': function() {
-			var editor = this.editor, bot = this.editorBot,
-				ac = new CKEDITOR.plugins.autocomplete( this.editor, matchTestCallback, dataCallback );
+		'test tab inserts match': function() {
+			var editor = this.editors.standard,
+				editable = editor.editable(),
+				ac = new CKEDITOR.plugins.autocomplete( editor, matchTestCallback, dataCallback );
 
-			bot.setHtmlWithSelection( '' );
+			this.editorBots.standard.setHtmlWithSelection( '' );
+
+			editor.editable().fire( 'keyup', new CKEDITOR.dom.event( {} ) );
+
+			editable.fire( 'keydown', new CKEDITOR.dom.event( { keyCode: 9 } ) ); // TAB
+
+			assert.areEqual( '<p>item1</p>', editor.getData() );
+
+			ac.destroy();
+		},
+
+		'test custom autocomplete.commitKeystroke value': function() {
+			var editor = this.editors.standard,
+				editable = editor.editable(),
+				ac = new CKEDITOR.plugins.autocomplete( editor, matchTestCallback, dataCallback );
+
+			this.editorBots.standard.setHtmlWithSelection( '' );
+
+			ac.commitKeystroke = [ 16 ]; // SHIFT
+
+			editor.editable().fire( 'keyup', new CKEDITOR.dom.event( {} ) );
+
+			editable.fire( 'keydown', new CKEDITOR.dom.event( { keyCode: 9 } ) ); // TAB
+			assert.areEqual( '', editor.getData(), 'Tab caused insertion' );
+
+			editable.fire( 'keydown', new CKEDITOR.dom.event( { keyCode: 16 } ) ); // SHIFT
+
+			assert.areEqual( '<p>item1</p>', editor.getData() );
+
+			ac.destroy();
+		},
+
+		'test custom config.autocomplete_commitKeystroke (array format)': function() {
+			var editor = this.editors.arrayKeystrokes,
+				editable = editor.editable(),
+				ac = new CKEDITOR.plugins.autocomplete( editor, matchTestCallback, dataCallback );
+
+			this.editorBots.arrayKeystrokes.setHtmlWithSelection( '' );
+
+			editor.editable().fire( 'keyup', new CKEDITOR.dom.event( {} ) );
+
+			editable.fire( 'keydown', new CKEDITOR.dom.event( { keyCode: 9 } ) ); // TAB
+			assert.areEqual( '', editor.getData(), 'Tab caused insertion' );
+
+			editable.fire( 'keydown', new CKEDITOR.dom.event( { keyCode: 16 } ) ); // SHIFT
+
+			assert.areEqual( '<p>item1</p>', editor.getData() );
+
+			ac.destroy();
+		},
+
+		'test custom config.autocomplete_commitKeystroke (primitive number)': function() {
+			var editor = this.editors.singleKeystroke,
+				editable = editor.editable(),
+				ac = new CKEDITOR.plugins.autocomplete( editor, matchTestCallback, dataCallback );
+
+			this.editorBots.singleKeystroke.setHtmlWithSelection( '' );
+
+			editor.editable().fire( 'keyup', new CKEDITOR.dom.event( {} ) );
+
+			editable.fire( 'keydown', new CKEDITOR.dom.event( { keyCode: 9 } ) ); // TAB
+			assert.areEqual( '', editor.getData(), 'Tab caused insertion' );
+
+			editable.fire( 'keydown', new CKEDITOR.dom.event( { keyCode: 16 } ) ); // SHIFT
+
+			assert.areEqual( '<p>item1</p>', editor.getData() );
+
+			ac.destroy();
+		},
+
+		'test click inserts match': function() {
+			var editor = this.editors.standard,
+				ac = new CKEDITOR.plugins.autocomplete( editor, matchTestCallback, dataCallback );
+
+			this.editorBots.standard.setHtmlWithSelection( '' );
 
 			editor.editable().fire( 'keyup', new CKEDITOR.dom.event( {} ) );
 
