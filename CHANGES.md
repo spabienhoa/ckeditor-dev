@@ -15,6 +15,7 @@ Fixed Issues:
 * [#1321](https://github.com/ckeditor/ckeditor-dev/issues/1321): Ideographic space character `\u3000` is lost when pasting text.
 * [#1776](https://github.com/ckeditor/ckeditor-dev/issues/1776): [Image Base](https://ckeditor.com/cke4/addon/imagebase) empty caption placeholder is not hidden when blurred.
 * [#1592](https://github.com/ckeditor/ckeditor-dev/issues/1592): [Image Base](https://ckeditor.com/cke4/addon/imagebase) caption is not visible after paste.
+* [#1816](https://github.com/ckeditor/ckeditor-dev/issues/1816): Fixed: Table breaks when <kbd>Enter</kbd> was pressed over tableselection.
 
 API Changes:
 
