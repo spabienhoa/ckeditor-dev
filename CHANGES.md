@@ -10,6 +10,7 @@ Fixed Issues:
 * [#1748](https://github.com/ckeditor/ckeditor-dev/pull/1748): Fixed: Added missing [`CKEDITOR.dialog.definition.onHide`](https://docs.ckeditor.com/ckeditor4/latest/api/CKEDITOR_dialog_definition.html#property-onHide) API documentation. Thanks to [sunnyone](https://github.com/sunnyone)!
 * [#1321](https://github.com/ckeditor/ckeditor-dev/issues/1321): Ideographic space character `\u3000` is lost when pasting text.
 * [#1776](https://github.com/ckeditor/ckeditor-dev/issues/1776): [Image Base](https://ckeditor.com/cke4/addon/imagebase) empty caption placeholder is not hidden when blurred.
+* [#620](https://github.com/ckeditor/ckeditor-dev/issues/620): Fixed: [`forcePasteAsPlainText`](https://docs.ckeditor.com/ckeditor4/latest/api/CKEDITOR_config.html#cfg-forcePasteAsPlainText) will be respect when internal and cross-editor pasting happens.
 
 ## CKEditor 4.9
 
