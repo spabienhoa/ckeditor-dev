@@ -530,7 +530,7 @@ CKEDITOR.dom.element.clearMarkers = function( database, element, removeFromDatab
 					return;
 				}
 
-				var frameRect = frame.getClientRect( true );
+				var frameRect = frame.getClientRect();
 
 				elementRect.top += frameRect.top;
 				elementRect.left += frameRect.left;
